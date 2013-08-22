@@ -34,10 +34,10 @@ function getTwitterStatus_WP($userid,$count=1, $showDate=true, $userimg=false, $
 
 	if(!empty($tweet_content)):
 		foreach($tweet_content as $chose => $status){
-			$interChange=null;
 			$text=trim(str_replace("’","'",$status->text));
 			$date = str_replace('+0000', '', $status->created_at);
 			// print_r($status->text);
+			$interChange=null;
 			foreach($status->entities as $type=> $param){
 
 				// print_r($type);
@@ -78,46 +78,47 @@ function getTwitterStatus_WP($userid,$count=1, $showDate=true, $userimg=false, $
 			
 			//$newdate=getRelativeTime($newdate);
 			$newdate=time2str($newdate, $date->format('Y-m-d'), $fullMonth);
-		}
-		ob_start(); ?>
-		<p>
-			<?php if ($userimg!==false): ?>
-			<span class="tweet-user-image"><img src="<?php echo $status->user->profile_image_url ?>" alt="<?php echo $status->user->screen_name ?>" /></span>
-			<?php endif ?>
+		
+			ob_start(); ?>
+			<p>
+				<?php if ($userimg!==false): ?>
+				<span class="tweet-user-image"><img src="<?php echo $status->user->profile_image_url ?>" alt="<?php echo $status->user->screen_name ?>" /></span>
+				<?php endif ?>
 
-			<span class="tweet-content">
+				<span class="tweet-content">
 
-			<?php if ($beforeAfterTweet[0]===true): ?>
-				<span class="beforeTweet"><?php echo $beforeAfterTweet[1] ?></span>
-			<?php endif ?>
+				<?php if ($beforeAfterTweet[0]===true): ?>
+					<span class="beforeTweet"><?php echo $beforeAfterTweet[1] ?></span>
+				<?php endif ?>
 
-			<?php if ($showUserName===true): ?>
-				<span class="tweet-user-name"><?php echo $status->user->name ?></span><?php echo $delimiter ?>
-			<?php endif ?>
+				<?php if ($showUserName===true): ?>
+					<span class="tweet-user-name"><?php echo $status->user->name ?></span><?php echo $delimiter ?>
+				<?php endif ?>
 
-			<?php echo (!empty($interChange)?strtr($text,$interChange):$text) ?>
+				<?php echo (!empty($interChange)?strtr($text,$interChange):$text) ?>
 
-			<?php if ($beforeAfterTweet[0]===true): ?>
-				<span class="afterTweet"><?php echo $beforeAfterTweet[2] ?></span>
-			<?php endif ?>
+				<?php if ($beforeAfterTweet[0]===true): ?>
+					<span class="afterTweet"><?php echo $beforeAfterTweet[2] ?></span>
+				<?php endif ?>
 
-			<?php if ($showDate===true): ?>
-				<span class="tweet-date">
-					<a href="http://twitter.com/<?php echo $userid ?>/status/<?php echo $status->id ?>" target="_blank"><?php echo utf8_encode($newdate) ?></a>
-					<?php if ($retweet===true): ?>
-						&bull; <a href="http://twitter.com/intent/tweet?in_reply_to=<?php echo $status->id ?>" target="_blank"><?php echo (SITELANG=="fr"?'répondre':"reply") ?></a>
-						&bull; <a href="http://twitter.com/intent/retweet?tweet_id=<?php echo $status->id ?>" target="_blank"><?php echo (SITELANG=="fr"?'retweete':"retweet") ?></a>
-						&bull; <a href="http://twitter.com/intent/favorite?tweet_id=<?php echo $status->id ?>" target="_blank"><?php echo (SITELANG=="fr"?'favoris':"favorites") ?></a>
-					<?php endif ?>
+				<?php if ($showDate===true): ?>
+					<span class="tweet-date">
+						<a href="http://twitter.com/<?php echo $userid ?>/status/<?php echo $status->id ?>" target="_blank"><?php echo utf8_encode($newdate) ?></a>
+						<?php if ($retweet===true): ?>
+							&bull; <a href="http://twitter.com/intent/tweet?in_reply_to=<?php echo $status->id ?>" target="_blank"><?php echo (SITELANG=="fr"?'répondre':"reply") ?></a>
+							&bull; <a href="http://twitter.com/intent/retweet?tweet_id=<?php echo $status->id ?>" target="_blank"><?php echo (SITELANG=="fr"?'retweete':"retweet") ?></a>
+							&bull; <a href="http://twitter.com/intent/favorite?tweet_id=<?php echo $status->id ?>" target="_blank"><?php echo (SITELANG=="fr"?'favoris':"favorites") ?></a>
+						<?php endif ?>
+					</span>
+				<?php endif ?>
+
 				</span>
-			<?php endif ?>
-
-			</span>
-		</p>
-		<div class="clear"></div>
-		<?php
-		$new_content = ob_get_contents();
-		ob_end_clean();
+			</p>
+			<div class="clear"></div>
+			<?php
+			$new_content .= ob_get_contents();
+			ob_end_clean();
+		}
 	else:
 		switch(SITELANG){
 			case 'en':
